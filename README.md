@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Golf Charity Subscription Platform
 
-## Getting Started
+Full-stack web application built for the Digital Heroes PRD assignment.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 (App Router, TypeScript)
+- Supabase (Auth + Postgres + RLS)
+- Tailwind CSS
+- Zod validation
+
+## Implemented PRD Modules
+
+- Public visitor pages: concept + charity directory + CTA
+- Authentication: signup/login with Supabase
+- Subscription system: monthly/yearly plan, charity selection, charity percentage
+- Score management: Stableford score input with automatic rolling latest-5 retention
+- Draw engine:
+	- Random and weighted modes
+	- Simulation and publish flows
+	- Tier logic (5/4/3) with 40/35/25 split
+	- Jackpot rollover when no 5-match winner
+- User dashboard:
+	- Subscription status
+	- Score entry and reverse-chronological score list
+	- Participation/winnings view
+	- Winner proof URL submission
+- Admin dashboard:
+	- Analytics overview
+	- Draw run/publish controls
+	- Charity management (create)
+	- Winner verification and payout status updates
+
+## Project Setup
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Create `.env.local` from `.env.example` and add values:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+MONTHLY_PLAN_PRICE=29
+YEARLY_PLAN_PRICE=299
+```
+
+3. In Supabase SQL Editor, run:
+
+- `supabase/schema.sql`
+
+4. Start app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Admin Bootstrap
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To make your first account admin:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Sign up in the app.
+2. Send a POST request to `/api/auth/set-role` while logged in.
+3. Add header `x-admin-bootstrap` with your `SUPABASE_SERVICE_ROLE_KEY` value.
 
-## Learn More
+After this, your current user gets `admin` role and can access `/admin`.
 
-To learn more about Next.js, take a look at the following resources:
+## Important API Routes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `POST /api/subscription`
+- `POST /api/scores`
+- `POST /api/admin/draw/run`
+- `POST /api/admin/charities`
+- `PATCH /api/admin/winners/:id`
+- `PATCH /api/winners/:id/proof`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Production Validation
 
-## Deploy on Vercel
+```bash
+npm run lint
+npm run build
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment (New Accounts Required)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Create a new Supabase project.
+2. Run `supabase/schema.sql` in the new project.
+3. Create a new Vercel account and import this repository.
+4. Add all environment variables from `.env.example` to Vercel project settings.
+5. Deploy.
+6. Verify these flows on live URL:
+	 - Signup/login
+	 - Subscription setup (monthly/yearly)
+	 - Add >5 scores and confirm rolling retention
+	 - Simulate and publish draw from admin
+	 - Update winner verification/payment status
+
+## Notes
+
+- Stripe keys are included in env structure for payment integration readiness.
+- The current assignment build models subscription activation directly in app logic and database state.
