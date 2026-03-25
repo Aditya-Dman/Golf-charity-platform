@@ -1,6 +1,3 @@
--- One-time patch for existing Supabase project
--- Fixes: "infinite recursion detected in policy for relation profiles"
-
 create or replace function public.is_admin(uid uuid)
 returns boolean
 language sql

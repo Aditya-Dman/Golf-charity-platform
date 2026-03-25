@@ -1,6 +1,3 @@
--- Golf Charity Subscription Platform schema
--- Run in Supabase SQL editor.
-
 create extension if not exists pgcrypto;
 
 create table if not exists public.profiles (
@@ -130,7 +127,6 @@ alter table public.charities enable row level security;
 alter table public.draws enable row level security;
 alter table public.winners enable row level security;
 
--- Subscriber policies
 create policy "Profiles readable by owner"
   on public.profiles for select
   using (auth.uid() = id);
@@ -166,7 +162,6 @@ create policy "Everyone reads charities"
 create policy "Subscribers read published draws"
   on public.draws for select using (status = 'published');
 
--- Admin policies
 create policy "Admins manage profiles"
   on public.profiles for all
   using (public.is_admin(auth.uid()))
@@ -197,7 +192,6 @@ create policy "Admins manage winners"
   using (public.is_admin(auth.uid()))
   with check (public.is_admin(auth.uid()));
 
--- Seed charities (optional)
 insert into public.charities(name, description, featured)
 values
   ('First Tee Futures', 'Supporting junior golfers from underserved communities.', true),
