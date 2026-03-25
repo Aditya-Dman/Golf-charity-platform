@@ -107,6 +107,22 @@ create trigger trg_trim_scores
   after insert on public.scores
   for each row execute procedure public.trim_scores_to_latest_five();
 
+create or replace function public.is_admin(uid uuid)
+returns boolean
+language sql
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.profiles
+    where id = uid and role = 'admin'
+  );
+$$;
+
+revoke all on function public.is_admin(uuid) from public;
+grant execute on function public.is_admin(uuid) to authenticated;
+
 alter table public.profiles enable row level security;
 alter table public.subscriptions enable row level security;
 alter table public.scores enable row level security;
@@ -153,27 +169,33 @@ create policy "Subscribers read published draws"
 -- Admin policies
 create policy "Admins manage profiles"
   on public.profiles for all
-  using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
+  using (public.is_admin(auth.uid()))
+  with check (public.is_admin(auth.uid()));
 
 create policy "Admins manage charities"
   on public.charities for all
-  using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
+  using (public.is_admin(auth.uid()))
+  with check (public.is_admin(auth.uid()));
 
 create policy "Admins manage subscriptions"
   on public.subscriptions for all
-  using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
+  using (public.is_admin(auth.uid()))
+  with check (public.is_admin(auth.uid()));
 
 create policy "Admins manage scores"
   on public.scores for all
-  using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
+  using (public.is_admin(auth.uid()))
+  with check (public.is_admin(auth.uid()));
 
 create policy "Admins manage draws"
   on public.draws for all
-  using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
+  using (public.is_admin(auth.uid()))
+  with check (public.is_admin(auth.uid()));
 
 create policy "Admins manage winners"
   on public.winners for all
-  using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
+  using (public.is_admin(auth.uid()))
+  with check (public.is_admin(auth.uid()));
 
 -- Seed charities (optional)
 insert into public.charities(name, description, featured)
