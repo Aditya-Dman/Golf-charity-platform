@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { addMonths, addYears, formatISO } from "date-fns";
 import { z } from "zod";
 import { getServerSupabaseClient } from "@/lib/supabaseServer";
+import { getRequestUser } from "@/lib/requestUser";
 
 const schema = z.object({
   planType: z.enum(["monthly", "yearly"]),
@@ -11,9 +12,7 @@ const schema = z.object({
 
 export async function POST(req: NextRequest) {
   const supabase = await getServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getRequestUser(req);
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

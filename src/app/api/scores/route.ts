@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getServerSupabaseClient } from "@/lib/supabaseServer";
+import { getRequestUser } from "@/lib/requestUser";
 
 const schema = z.object({
   score: z.number().int().min(1).max(45),
@@ -9,9 +10,7 @@ const schema = z.object({
 
 export async function POST(req: NextRequest) {
   const supabase = await getServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getRequestUser(req);
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

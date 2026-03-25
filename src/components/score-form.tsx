@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { getBrowserSupabaseClient } from "@/lib/supabase";
 
 export function ScoreForm() {
   const router = useRouter();
@@ -15,9 +16,17 @@ export function ScoreForm() {
     setBusy(true);
     setMessage("");
 
+    const supabase = getBrowserSupabaseClient();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
     const res = await fetch("/api/scores", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+      },
       body: JSON.stringify({ score, scoreDate }),
     });
 

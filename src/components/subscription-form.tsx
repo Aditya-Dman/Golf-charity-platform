@@ -3,6 +3,7 @@
 import { FormEvent, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toCurrency } from "@/lib/utils";
+import { getBrowserSupabaseClient } from "@/lib/supabase";
 
 type Charity = {
   id: string;
@@ -43,9 +44,17 @@ export function SubscriptionForm({
     setBusy(true);
     setMessage("");
 
+    const supabase = getBrowserSupabaseClient();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
     const res = await fetch("/api/subscription", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+      },
       body: JSON.stringify({
         planType,
         charityId: charityId || null,
