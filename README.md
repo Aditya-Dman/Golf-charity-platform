@@ -1,4 +1,4 @@
-# Golf Charity Subscription Platform
+ # Golf Charity Subscription Platform
 
 Full-stack web application built for the Digital Heroes PRD assignment.
 
