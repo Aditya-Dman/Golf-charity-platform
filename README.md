@@ -1,35 +1,37 @@
- # Golf Charity Subscription Platform
+# Golf Charity Subscription Platform
+
+**Main website:** **[golf-charity-platform-3litbqtig-adityadhiman-projects.vercel.app](https://golf-charity-platform-3litbqtig-adityadhiman-projects.vercel.app/)**
 
 Full-stack web application built for the Digital Heroes PRD assignment.
 
-## Stack
+## Features
+
+- Public visitor pages: concept + charity directory + call-to-action
+- Authentication: signup/login with Supabase
+- Subscription system: monthly/yearly plan, charity selection, charity percentage
+- Score management: Stableford score input with automatic rolling latest-5 retention
+- Draw engine:
+  - Random and weighted modes
+  - Simulation and publish flows
+  - Tier logic (5/4/3) with 40/35/25 split
+  - Jackpot rollover when no 5-match winner
+- User dashboard:
+  - Subscription status
+  - Score entry and reverse-chronological score list
+  - Participation/winnings view
+  - Winner proof URL submission
+- Admin dashboard:
+  - Analytics overview
+  - Draw run/publish controls
+  - Charity management (create)
+  - Winner verification and payout status updates
+
+## Tech Stack
 
 - Next.js 16 (App Router, TypeScript)
 - Supabase (Auth + Postgres + RLS)
 - Tailwind CSS
 - Zod validation
-
-## Implemented PRD Modules
-
-- Public visitor pages: concept + charity directory + CTA
-- Authentication: signup/login with Supabase
-- Subscription system: monthly/yearly plan, charity selection, charity percentage
-- Score management: Stableford score input with automatic rolling latest-5 retention
-- Draw engine:
-	- Random and weighted modes
-	- Simulation and publish flows
-	- Tier logic (5/4/3) with 40/35/25 split
-	- Jackpot rollover when no 5-match winner
-- User dashboard:
-	- Subscription status
-	- Score entry and reverse-chronological score list
-	- Participation/winnings view
-	- Winner proof URL submission
-- Admin dashboard:
-	- Analytics overview
-	- Draw run/publish controls
-	- Charity management (create)
-	- Winner verification and payout status updates
 
 ## Project Setup
 
@@ -95,12 +97,12 @@ npm run build
 3. Create a new Vercel account and import this repository.
 4. Add all environment variables from `.env.example` to Vercel project settings.
 5. Deploy.
-6. Verify these flows on live URL:
-	 - Signup/login
-	 - Subscription setup (monthly/yearly)
-	 - Add >5 scores and confirm rolling retention
-	 - Simulate and publish draw from admin
-	 - Update winner verification/payment status
+6. Verify these flows on the live URL:
+   - Signup/login
+   - Subscription setup (monthly/yearly)
+   - Add >5 scores and confirm rolling retention
+   - Simulate and publish draw from admin
+   - Update winner verification/payment status
 
 ## Notes
 
